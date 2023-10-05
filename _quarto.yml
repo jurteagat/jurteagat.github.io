@@ -1,0 +1,33 @@
+project:
+  type: website
+
+website:
+  title: "Mg. Juan N. Urteaga Tirado"
+  favicon: rudder.svg
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - posts.qmd
+      - href: https://integrandesconsulting.github.io/
+        text: Integrandes Consulting
+    tools:
+      - icon: linkedin
+        href: https://www.linkedin.com/in/jnut/
+      - icon: github
+        href: https://github.com/jurteagat
+      - icon: youtube
+        href: https://www.youtube.com/@jurteagat/
+
+
+
+format:
+  html:
+    theme: 
+      light: flatly
+      dark: darkly
+    css: styles.css
+    toc: true
+
+editor: visual
+
