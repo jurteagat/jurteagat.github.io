@@ -1,0 +1,12 @@
+---
+title: "Bienvenidos a mi blog"
+author: "Juan Urteaga Tirado"
+date: "2023-09-23"
+categories: [Novedades]
+---
+
+¡Bienvenidos! En este blog estaré compartiendo algunas ideas sobre los temas de mi interés, tales como ciencia de datos, analítica espacial, ciencia urbana-territorial, estudios del desarrollo, ~~gastronomía~~, política, religión, organización personal, etc. y que me gustaría que el público pueda leer y darme retroalimentación.
+
+![](images/img_1.jpg)
+
+¡Gracias por leerme!
