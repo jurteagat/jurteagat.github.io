@@ -18,7 +18,7 @@ Hace unas semanas atrás, tuve la dicha de participar de una pasantía en la Uni
 
 [^1]: Nota: Posiblemente algunas personas acostumbradas a viajar al extranjero o que frecuentan entornos modernos, consideren algunos contenidos innecesarios, ¡Disculpas anticipadas! La intención es llegar también a un público más amplio 😉.
 
-![Entrada del centro de investigación en el que realicé la pasantía.](images/IMG_20230914_161937575.jpg){#fig-1 fig-align="center" width="70%"}
+![Entrada del centro de investigación en el que realicé la pasantía.](images/IMG_20230914_161937575.jpg){#fig-1 .preview-image fig-align="center" width="80%"}
 
 ```{r}
 #| label: fig-2
@@ -72,27 +72,27 @@ leaflet(states) %>%
 
 ```
 
-## La digitalización, ampliamente extendida...
+## 1. La digitalización, ampliamente extendida...
 
 Me gustaría empezar compartiendo acerca del nivel de digitalización que observé, considerando que en nuestro país y latinoamérica tenemos un reto importante en este aspecto. Entre tantos casos observados, podría mencionar por ejemplo: que en el condominio en el que vivía (de clase media ciertamente), se usaba [una App](https://play.google.com/store/apps/details?id=com.tti.caleco&pcampaignid=web_share) para acceder a las lavadoras y secadoras de uso común, con lo cual uno solo se preocupaba por agregar el detergente y poner su ropa; por otro lado, para el uso de los buses de la universidad, uno puede seguir en tiempo real (@fig-3) sus ubicaciones [a través de la web](http://udshuttle.doublemap.com/map/mobile), lo que facilita la organización personal para transportarse; por último, para el caso de los buses de transporte público solo se requiere usar también [una App](https://www.dartfirststate.com/) en la que uno puede recargarse fácilmente el saldo, y generar un código QR para ser leído en los buses (también puedes seguir la ubicación de los buses en tiempo real). Ciertamente, dichos ejemplos no son de gran complejidad, por lo cual podrían fácilmente extenderse en nuestro país, con las adaptaciones necesarias. 
 
-![Como se puede ver, a través de dicha web App, uno puede fácilmente saber dónde se encuentra el bus de interés. Registrado desde UD [-@UD2023]](images/transito.gif){#fig-3 fig-align="center" width="70%"}
+![Como se puede ver, a través de dicha web App, uno puede fácilmente saber dónde se encuentra el bus de interés. Registrado desde UD [-@UD2023]](images/transito.gif){#fig-3 fig-align="center" width="90%"}
 
-## Un paso más ... La cultura de datos abiertos
+## 2. Un paso más ... La cultura de datos abiertos
 
 Otro de los aspectos que me pareció bastante interesante, fue la cultura de datos abiertos que tienen muchas ciudades y regiones allá, lo que ciertamente facilita el desarrollo de iniciativas de programadores (de distintos niveles) y de la sociedad en su conjunto. 
 
-En el caso de Delaware, hay un [portal a nivel del estado](https://data.delaware.gov/) que comparte bastante información. Por otro lado, hay portales a nivel país que permiten obtener con cierta facilidad diversos datos, como los del ámbito [censal y demográfico](https://data.census.gov/). Una ciudad sobre la que me gustaría comentar en más profundidad es el caso de la [ciudad de Nueva York](https://opendata.cityofnewyork.us/), por la que tuve oportunidad de visitar (aunque brevemente) y que ciertamente es una de las ciudades con mayor riqueza de datos abiertos.
+En el caso de Delaware, hay un portal a nivel del estado que comparte bastante información [cf. @state_of_delaware_state_nodate]. Por otro lado, hay portales a nivel del país que permiten obtener con cierta facilidad diversos datos, como los del ámbito censal y demográfico [cf. @us_census_bureau_datacensusgov_nodate]. Una ciudad sobre la que me gustaría comentar en más profundidad es el caso de la ciudad de Nueva York, por la que tuve oportunidad de visitar (aunque brevemente) y que ciertamente es una de las ciudades con mayor riqueza de datos abiertos [cf. @nyc-oti].
 
-![La ciudad de Nueva York y algunos de sus rascacielos.](images/IMG_20230915_172932015%20-%20copia.jpg){#fig-4 fig-align="center" width="50%"}
+![La ciudad de Nueva York y algunos de sus rascacielos.](images/IMG_20230915_172932015%20-%20copia.jpg){#fig-4 fig-align="center" width="70%"}
 
 En ese sentido, me gustaría identificar algunos ejemplos de data disponible en la ciudad de Nueva York, que de poder tenerse en el Perú "fácilmente" podrían representar un aporte a aliviar las preocupaciones de nuestros compatriotas.
 
-## Empecemos con la base de datos de llamadas de "no emergencia" (311)
+## 3. Empecemos con la base de datos de llamadas de "no emergencia" (311)
 
 En Nueva York, así como existe el conocido número 911 frecuentemente usado para llamadas policiales, existe el 311 para llamadas de "no emergencia", en la cual los ciudadanos pueden hacer consultas o reclamos acerca del bloqueo de calles, ruido, acumulación de basura, estacionamientos ilegales, etc. Otro detalle importante es que buena parte de estas llamadas son grabadas, así como registrados en una base de datos, parte de la cual es de acceso abierto. Esta interesante data ha sido fuente de interesantes proyectos, como el de Dubno y Argov [-@Dubno2018], en el cual me he basado para ilustrar este apartado.
 
-### Una exploración inicial
+### 3.1. Una exploración inicial
 
 Considerando el top 10 de tipos de quejas en la ciudad, a través del 311 (@fig-5), se puede decir que las quejas más frecuentes están relacionadas al estacionamiento ilegal de vehículos, y los ruidos de diversos tipos (e.g. en las calles/veredas, dentro de las viviendas, el generado por el comercio), así como también las condiciones insalubres.
 
@@ -227,7 +227,7 @@ library(reshape2)
 #   coord_flip()
 ```
 
-### La problemática del ruido
+### 3.2. La problemática del ruido
 
 Como se observó en la @fig-5, existe una importante presencia de quejas sobre ruidos en la ciudad de Nueva York. Ciertamente, Lima también cuenta con un importante problema de contaminación sonora. De acuerdo con la encuesta de Lima Cómo Vamos [@LCV2022], para el 26% de limeños la contaminación ambiental es uno de los 3 problemas más importantes, y para el 30% el nivel de ruido es uno de los 3 principales problemas ambientales.
 
@@ -322,9 +322,11 @@ tm_shape(compl_kde_raster) +
             alpha = 0.7, legend.show= FALSE)
 ```
 
-## Continuará...
+## 4. Continuará...
 
 Planeo continuar con el desarrollo de ejercicios similares de análisis, que nos permitan explorar y enriquecernos de algunas **experiencias nacionales e internacionales** de datos abiertos y digitalización, abordando problemas de relevancia para nuestro país tales como la seguridad ciudadana, la gestión del riesgo de desastre, el transporte, etc.
+
+¡Me gustaría saber tu opinión! Puedes dejarme tus comentarios [aquí](https://www.linkedin.com/posts/jnut_blogpersonal-datosabiertos-datascience-activity-7115798098953519104-Ov-6).
 
 ¡Los veo en el siguiente artículo!
 

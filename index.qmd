@@ -18,15 +18,21 @@ about:
     - icon: mortarboard
       text: Google Scholar
       href: https://scholar.google.es/citations?user=khg2ZbsAAAAJ
+    - icon: bank
+      text: Concytec
+      href: https://ctivitae.concytec.gob.pe/appDirectorioCTI/VerDatosInvestigador.do?id_investigador=29053
 ---
 
-Esta es mi web personal. Soy Juan N. Urteaga Tirado. Estoy especializado en gestión de riesgos de desastres en localidades, metodología de investigación, análisis de datos espaciales, monitoreo de proyectos de desarrollo y tasaciones. Mis intereses de desarrollo académico-profesional se encuentran principalmente dentro de los campos de la planificación y desarrollo territorial, gestión del riesgo de desastres y ciencia de datos espaciales.
+¡Hola! Soy Juan N. Urteaga Tirado. Estoy especializado en gestión de riesgos de desastres en localidades, metodología de investigación, análisis de datos espaciales, monitoreo de proyectos de desarrollo y tasaciones. Mis intereses de desarrollo académico-profesional se encuentran principalmente dentro de los campos de la planificación y desarrollo territorial, gestión del riesgo de desastres y ciencia de datos espaciales.
 
+¡En mis redes sociales, puedes ver más sobre mí!
+
+::: {.callout-note collapse="true" appearance="simple" icon="false"}
 ## Educación
 
 **Aporta y MIT IDSS** (Massachusetts Institute of Technology -Institute for Data, Systems and Society) \| Hybrid
 
-*Advanced Program in Data Science & Global Skills \| En curso*
+*Advanced Program in Data Science & Global Skills* *\| [En curso](https://idss.mit.edu/engage/idss-strategic-partnerships/strategic-partnerships-in-education/breit-and-aporta/)*
 
 **Pontificia Universidad Católica del Perú (PUCP)** \| Lima, Perú
 
@@ -35,7 +41,9 @@ Esta es mi web personal. Soy Juan N. Urteaga Tirado. Estoy especializado en gest
 **Universidad Nacional de Ingeniería (UNI)** \| Lima, Perú
 
 *B.Sc en Ingeniería Civil \| Mar 2009 ‑ Ene 2016*
+:::
 
+::: {.callout-note collapse="true" appearance="simple" icon="false"}
 ## Experiencia
 
 **Universidad Nacional de Ingeniería (UNI)** \| *Docente e investigador \| Mayo 2022 - Actualmente*
@@ -49,3 +57,4 @@ Esta es mi web personal. Soy Juan N. Urteaga Tirado. Estoy especializado en gest
 **Ministerio de Economía y Finanzas (MEF)** \| *Consultor \| Mar 2016 ‑ Jul 2016*
 
 **Banco Interamericano de Desarrollo (BID)** \| *Asistente de investigación \| Feb 2015 - Ene 2016*
+:::

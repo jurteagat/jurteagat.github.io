@@ -4,6 +4,7 @@ project:
 website:
   title: "Mg. Juan N. Urteaga Tirado"
   favicon: rudder.svg
+  open-graph: true
   navbar:
     left:
       - href: index.qmd
