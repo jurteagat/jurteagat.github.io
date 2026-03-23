@@ -10,8 +10,6 @@ website:
       - href: index.qmd
         text: Home
       - posts.qmd
-      - href: https://integrandesconsulting.github.io/
-        text: Integrandes Consulting
     tools:
       - icon: linkedin
         href: https://www.linkedin.com/in/jnut/

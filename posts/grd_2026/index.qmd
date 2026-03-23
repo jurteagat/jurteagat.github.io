@@ -1,0 +1,725 @@
+---
+title: "Perú Elecciones 2026: ¿Qué necesitamos en Gestión del Riesgo de Desastres?"
+# format:
+#   html:
+#     embed-resources: true
+#     page-layout: full
+execute:
+  echo: false
+  warning: false
+  message: false
+author: "Juan Urteaga Tirado"
+date: "2023-10-05"
+categories: [Gestión del Riesgo de Desastres, Ciencia de Datos, Estudios Territoriales]
+bibliography: references.bib
+lang: es
+csl: apa.csl
+---
+
+```{r}
+#| label: setup
+
+# Cargar solo librerías necesarias para replicar los tres gráficos.
+library(dplyr)
+library(tidyr)
+library(readr)
+library(scales)
+library(glue)
+library(htmltools)
+library(plotly)
+library(sf)
+library(data.table)
+library(crosstalk)
+library(leaflet)
+library(stringr)
+
+# Evitar notación científica en etiquetas y cálculos mostrados al usuario.
+options(scipen = 999)
+
+library(here)
+```
+
+```{css}
+/*
+ * Estilo editorial base (tomado de grafico_damnificados.qmd)
+ * y aplicado de forma consistente a todos los bloques interactivos.
+ */
+.ft-chart-wrapper {
+  font-family: "Metric", "Georgia", serif;
+  max-width: 1100px;
+  margin: 2.5rem auto 1.5rem;
+  padding: 0;
+}
+
+.ft-chart-wrapper::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #990f3d 0%, #0d7680 100%);
+  margin-bottom: 1.2rem;
+}
+
+.ft-chart-wrapper .chart-headline {
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #1a1a1a;
+  margin: 0 0 0.3rem 0;
+  letter-spacing: -0.02em;
+}
+
+.ft-chart-wrapper .chart-subhead {
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: #66605c;
+  margin: 0 0 1rem 0;
+  line-height: 1.4;
+}
+
+.ft-chart-wrapper .chart-body {
+  border: 1px solid #e6e1dc;
+  border-radius: 2px;
+  overflow: hidden;
+  background: #fff1e5;
+  padding: 0.25rem;
+}
+
+.ft-chart-wrapper .chart-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 0.6rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e6e1dc;
+  font-size: 0.75rem;
+  color: #807973;
+  line-height: 1.4;
+}
+
+.ft-chart-wrapper .chart-footer .chart-source {
+  flex: 1;
+}
+
+.ft-chart-wrapper .chart-footer .chart-credit {
+  text-align: right;
+  white-space: nowrap;
+  margin-left: 1rem;
+}
+
+.ft-chart-wrapper .modebar {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.ft-chart-wrapper:hover .modebar {
+  opacity: 1;
+}
+```
+
+# Introducción (texto de ejemplo)
+
+Este es un texto de ejemplo para el artículo. En la Figura @fig-damnificados se presenta la evolución de personas damnificadas por tipo de peligro.
+
+Como segundo bloque narrativo de ejemplo, la Figura @fig-devengado muestra el devengado acumulado por categoría de agrupación en el periodo analizado.
+
+Finalmente, la Figura @fig-proyectos integra mapa y serie temporal vinculados, permitiendo explorar cada proyecto de forma interactiva dentro del artículo.
+
+```{r}
+#| label: prep-damnificados
+
+# Configuración de orden de apilamiento para el gráfico de damnificados.
+orden_peligros <- c(
+  "Otros",
+  "Incendio Urbano",
+  "Actividad Volcanica",
+  "Incendio Forestal",
+  "Vientos Fuertes",
+  "Sequia - Def. Hidrico",
+  "Mov. en Masa",
+  "Bajas Temperaturas",
+  "Sismo",
+  "Lluvia Intensa - Inundacion"
+)
+
+# Lectura y limpieza mínima de columnas para trabajar con nombres consistentes.
+df_damnificados_raw <- readr::read_delim(
+  here("raw/damnificados_peligros_2003_2024.csv"),
+  delim = ";",
+  show_col_types = FALSE
+) |>
+  dplyr::rename_with(trimws)
+
+col_renames <- c(
+  "Ano" = "Año",
+  "Actividad Volcanica" = "Actividad Volcánica",
+  "Lluvia Intensa - Inundacion" = "Lluvia Intensa – Inundación",
+  "Incendio Urbano" = "Incendio Urbano (*)",
+  "Mov. en Masa" = "Movimientos en Masa",
+  "Sequia - Def. Hidrico" = "Sequía- Déficit Hídrico"
+)
+
+# Renombrar en bucle para tolerar variaciones de encabezados.
+for (new_name in names(col_renames)) {
+  old_name <- col_renames[[new_name]]
+  if (old_name %in% names(df_damnificados_raw)) {
+    names(df_damnificados_raw)[names(df_damnificados_raw) == old_name] <- new_name
+  }
+}
+
+# Preparación en formato largo y completado de combinaciones faltantes.
+peligro_cols <- setdiff(names(df_damnificados_raw), "Ano")
+
+df_damnificados_plot <- df_damnificados_raw |>
+  tidyr::pivot_longer(
+    cols = dplyr::all_of(peligro_cols),
+    names_to = "peligro",
+    values_to = "damnificados"
+  ) |>
+  dplyr::mutate(
+    damnificados_miles = damnificados / 1e3,
+    peligro = trimws(peligro)
+  ) |>
+  tidyr::complete(
+    Ano,
+    peligro,
+    fill = list(damnificados = 0, damnificados_miles = 0)
+  ) |>
+  dplyr::mutate(peligro = factor(peligro, levels = orden_peligros))
+
+# Rango de años para ejes y títulos.
+anio_min_d <- min(df_damnificados_plot$Ano, na.rm = TRUE)
+anio_max_d <- max(df_damnificados_plot$Ano, na.rm = TRUE)
+
+# Paleta original del gráfico base de damnificados.
+paleta_damnificados <- c(
+  "Otros" = "#4B5320",
+  "Incendio Urbano" = "#C0C0D8",
+  "Actividad Volcanica" = "#E41A1C",
+  "Incendio Forestal" = "#2CA02C",
+  "Vientos Fuertes" = "#1B2A6B",
+  "Sequia - Def. Hidrico" = "#F5C242",
+  "Mov. en Masa" = "#8B1A1A",
+  "Bajas Temperaturas" = "#7B2D8E",
+  "Sismo" = "#A9A9A9",
+  "Lluvia Intensa - Inundacion" = "#56B4E9"
+)
+```
+
+```{r}
+#| label: fig-damnificados
+#| fig-cap: "Damnificados acumulados según principales peligros (visualización interactiva)."
+
+# Construcción de gráfico interactivo apilado con estilo editorial estándar.
+fig_damnificados <- plotly::plot_ly()
+
+for (peligro_name in orden_peligros) {
+  datos_p <- df_damnificados_plot |>
+    dplyr::filter(peligro == peligro_name) |>
+    dplyr::arrange(Ano)
+
+  fig_damnificados <- fig_damnificados |>
+    plotly::add_trace(
+      data = datos_p,
+      x = ~Ano,
+      y = ~damnificados_miles,
+      type = "scatter",
+      mode = "none",
+      stackgroup = "one",
+      fillcolor = paleta_damnificados[[peligro_name]],
+      name = peligro_name,
+      text = ~scales::comma(damnificados, accuracy = 1),
+      hovertemplate = paste0(
+        "<b>%{fullData.name}</b><br>",
+        "Año: %{x}<br>",
+        "Damnificados: %{text}",
+        "<extra></extra>"
+      ),
+      line = list(width = 0.3, color = paleta_damnificados[[peligro_name]])
+    )
+}
+
+# Aplicación de layout base para homogeneidad visual del artículo.
+fig_damnificados <- fig_damnificados |>
+  plotly::layout(
+    xaxis = list(
+      title = "",
+      tickmode = "linear",
+      tick0 = anio_min_d,
+      dtick = 1,
+      tickangle = -45,
+      tickfont = list(size = 11, family = "Georgia, serif", color = "#66605c"),
+      showgrid = FALSE,
+      zeroline = FALSE,
+      showline = TRUE,
+      linewidth = 1,
+      linecolor = "#ccc1b7",
+      range = list(anio_min_d - 0.3, anio_max_d + 0.3)
+    ),
+    yaxis = list(
+      title = list(
+        text = "Miles de personas",
+        font = list(size = 12, family = "Georgia, serif", color = "#66605c"),
+        standoff = 10
+      ),
+      tickformat = " ,",
+      separatethousands = TRUE,
+      showgrid = TRUE,
+      gridcolor = "rgba(0,0,0,0.06)",
+      gridwidth = 1,
+      griddash = "dot",
+      zeroline = FALSE,
+      showline = FALSE,
+      tickfont = list(size = 11, family = "Georgia, serif", color = "#66605c")
+    ),
+    legend = list(
+      orientation = "h",
+      x = 0,
+      y = -0.18,
+      xanchor = "left",
+      yanchor = "top",
+      font = list(size = 11, family = "Georgia, serif", color = "#33302e"),
+      traceorder = "reversed"
+    ),
+    hovermode = "x unified",
+    hoverlabel = list(
+      bgcolor = "rgba(255,255,255,0.96)",
+      bordercolor = "#ccc1b7",
+      font = list(size = 9, family = "Georgia, serif", color = "#33302e")
+    ),
+    plot_bgcolor = "#fff1e5",
+    paper_bgcolor = "#fff1e5",
+    margin = list(l = 65, r = 20, t = 10, b = 110),
+    font = list(family = "Georgia, serif", color = "#33302e")
+  ) |>
+  plotly::config(
+    displayModeBar = TRUE,
+    modeBarButtonsToRemove = c(
+      "lasso2d", "select2d", "autoScale2d",
+      "hoverCompareCartesian", "hoverClosestCartesian"
+    ),
+    displaylogo = FALSE,
+    locale = "es"
+  )
+
+# Wrapper editorial para título, subtítulo y pie en formato uniforme.
+htmltools::div(
+  class = "ft-chart-wrapper",
+  htmltools::h2(
+    class = "chart-headline",
+    glue::glue(
+      "Damnificados acumulados según los principales peligros — ",
+      "{anio_min_d}–{anio_max_d}"
+    )
+  ),
+  htmltools::p(
+    class = "chart-subhead",
+    "Miles de personas afectadas por tipo de peligro natural"
+  ),
+  htmltools::div(class = "chart-body", fig_damnificados),
+  htmltools::div(
+    class = "chart-footer",
+    htmltools::span(class = "chart-source", "Fuente: SINPAD – INDECI"),
+    htmltools::span(class = "chart-credit", "Elaboración propia")
+  )
+)
+```
+
+Texto de ejemplo para reemplazo: en la Figura @fig-damnificados se podría describir la tendencia general y los periodos de mayor concentración.
+
+```{r}
+#| label: prep-devengado
+
+# Variable de agrupación configurable para el bloque de devengado.
+var_agrupacion <- "Tipo"
+
+# Lectura y validación de datos de devengado.
+df_devengado_raw <- readr::read_delim(
+  here("raw/grd_2012_2025_t5_rev3_df.csv"),
+  delim = ";",
+  show_col_types = FALSE
+) |>
+  dplyr::rename_with(trimws)
+
+if (!var_agrupacion %in% names(df_devengado_raw)) {
+  stop(glue::glue("Column '{var_agrupacion}' not found in data"))
+}
+
+# Agregación por año y categoría, con completado para áreas apiladas.
+var_sym <- rlang::sym(var_agrupacion)
+
+df_devengado_plot <- df_devengado_raw |>
+  dplyr::mutate("{var_agrupacion}" := trimws(.data[[var_agrupacion]])) |>
+  dplyr::filter(!is.na(.data[[var_agrupacion]]), !is.na(ANIO)) |>
+  dplyr::group_by(ANIO, !!var_sym) |>
+  dplyr::summarise(
+    total_devengado = sum(DEVENGADO, na.rm = TRUE) / 1e6,
+    .groups = "drop"
+  ) |>
+  tidyr::complete(ANIO, !!var_sym, fill = list(total_devengado = 0))
+
+# Orden por peso acumulado para apilado consistente.
+cat_order <- df_devengado_plot |>
+  dplyr::group_by(.data[[var_agrupacion]]) |>
+  dplyr::summarise(total = sum(total_devengado), .groups = "drop") |>
+  dplyr::arrange(total) |>
+  dplyr::pull(.data[[var_agrupacion]])
+
+df_devengado_plot <- df_devengado_plot |>
+  dplyr::mutate("{var_agrupacion}" := factor(.data[[var_agrupacion]], levels = cat_order))
+
+# Paleta categórica para categorías de devengado.
+paleta_base <- c(
+  "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
+  "#D55E00", "#CC79A7", "#000000", "#44AA99", "#882255",
+  "#117733", "#DDCC77", "#AA4499", "#88CCEE", "#332288"
+)
+
+n_cats <- nlevels(df_devengado_plot[[var_agrupacion]])
+paleta_devengado <- setNames(
+  paleta_base[seq_len(n_cats)],
+  levels(df_devengado_plot[[var_agrupacion]])
+)
+
+# Rangos para ejes y metadatos visuales.
+anio_min_v <- min(df_devengado_plot$ANIO, na.rm = TRUE)
+anio_max_v <- max(df_devengado_plot$ANIO, na.rm = TRUE)
+```
+
+```{r}
+#| label: fig-devengado
+#| fig-cap: "Devengado acumulado por categoría de agrupación (visualización interactiva)."
+
+# Construcción explícita en plotly para igualar el estilo al gráfico base.
+fig_devengado <- plotly::plot_ly()
+
+for (cat_name in levels(df_devengado_plot[[var_agrupacion]])) {
+  datos_cat <- df_devengado_plot |>
+    dplyr::filter(.data[[var_agrupacion]] == cat_name) |>
+    dplyr::arrange(ANIO)
+
+  fig_devengado <- fig_devengado |>
+    plotly::add_trace(
+      data = datos_cat,
+      x = ~ANIO,
+      y = ~total_devengado,
+      type = "scatter",
+      mode = "none",
+      stackgroup = "one",
+      fillcolor = paleta_devengado[[as.character(cat_name)]],
+      name = as.character(cat_name),
+      text = ~scales::comma(total_devengado, accuracy = 0.1),
+      hovertemplate = paste0(
+        "<b>%{fullData.name}</b><br>",
+        "Año: %{x}<br>",
+        "Devengado: S/ %{text} M",
+        "<extra></extra>"
+      ),
+      line = list(width = 0.3, color = paleta_devengado[[as.character(cat_name)]])
+    )
+}
+
+# Layout estándar compartido para lectura homogénea.
+fig_devengado <- fig_devengado |>
+  plotly::layout(
+    xaxis = list(
+      title = "",
+      tickmode = "linear",
+      tick0 = anio_min_v,
+      dtick = 1,
+      tickangle = -45,
+      tickfont = list(size = 11, family = "Georgia, serif", color = "#66605c"),
+      showgrid = FALSE,
+      zeroline = FALSE,
+      showline = TRUE,
+      linewidth = 1,
+      linecolor = "#ccc1b7",
+      range = list(anio_min_v - 0.3, anio_max_v + 0.3)
+    ),
+    yaxis = list(
+      title = list(
+        text = "S/ millones",
+        font = list(size = 12, family = "Georgia, serif", color = "#66605c"),
+        standoff = 10
+      ),
+      tickformat = ",.0f",
+      separatethousands = TRUE,
+      showgrid = TRUE,
+      gridcolor = "rgba(0,0,0,0.06)",
+      gridwidth = 1,
+      griddash = "dot",
+      zeroline = FALSE,
+      showline = FALSE,
+      tickfont = list(size = 11, family = "Georgia, serif", color = "#66605c")
+    ),
+    legend = list(
+      orientation = "h",
+      x = 0,
+      y = -0.18,
+      xanchor = "left",
+      yanchor = "top",
+      font = list(size = 11, family = "Georgia, serif", color = "#33302e"),
+      traceorder = "reversed"
+    ),
+    hovermode = "x unified",
+    hoverlabel = list(
+      bgcolor = "rgba(255,255,255,0.96)",
+      bordercolor = "#ccc1b7",
+      font = list(size = 9, family = "Georgia, serif", color = "#33302e")
+    ),
+    plot_bgcolor = "#fff1e5",
+    paper_bgcolor = "#fff1e5",
+    margin = list(l = 65, r = 20, t = 10, b = 110),
+    font = list(family = "Georgia, serif", color = "#33302e")
+  ) |>
+  plotly::config(
+    displayModeBar = TRUE,
+    modeBarButtonsToRemove = c(
+      "lasso2d", "select2d", "autoScale2d",
+      "hoverCompareCartesian", "hoverClosestCartesian"
+    ),
+    displaylogo = FALSE,
+    locale = "es"
+  )
+
+# Wrapper editorial uniforme para segundo gráfico.
+htmltools::div(
+  class = "ft-chart-wrapper",
+  htmltools::h2(
+    class = "chart-headline",
+    glue::glue("Devengado acumulado por {var_agrupacion} — {anio_min_v}–{anio_max_v}")
+  ),
+  htmltools::p(
+    class = "chart-subhead",
+    "Programa Presupuestal 0068 en millones de soles"
+  ),
+  htmltools::div(class = "chart-body", fig_devengado),
+  htmltools::div(
+    class = "chart-footer",
+    htmltools::span(class = "chart-source", "Fuente: SIAF-MEF"),
+    htmltools::span(class = "chart-credit", "Elaboración propia")
+  )
+)
+```
+
+Texto de ejemplo para reemplazo: la Figura @fig-devengado puede citarse para explicar cambios de composición y periodos de mayor ejecución presupuestal.
+
+```{r}
+#| label: prep-proyectos
+
+# Lectura de insumos para visual vinculada (mapa + serie de tiempo).
+df_pu_geoinvierte_inv_g <- sf::st_read(
+  here("raw/df_pu_geoinvierte_inv_g.gpkg"),
+  quiet = TRUE
+)
+
+df_det_inv <- data.table::fread(here("raw/DETALLE_INVERSIONES_20260315.csv"))
+df_grd_2012_25 <- data.table::fread(here("midputs/grd_2012_2025_t.csv"))
+
+inv_pircc_anin_grd <- readr::read_csv(
+  here("midputs/DETALLE_INVERSIONES_GRD_PIRCC_ANIN_tot.csv"),
+  show_col_types = FALSE
+)
+
+# Filtrar universo PIRCC/ANIN y preparar top 10 por costo actualizado.
+df_det_inv_pircc <- df_det_inv |>
+  dplyr::mutate(cui_anin = CODIGO_UNICO %in% inv_pircc_anin_grd$CODIGO_UNICO) |>
+  dplyr::filter(cui_anin)
+
+df_det_inv_pircc_10 <- df_det_inv_pircc |>
+  dplyr::arrange(desc(COSTO_ACTUALIZADO)) |>
+  dplyr::slice_head(n = 10) |>
+  dplyr::mutate(CODIGO_UNICO = as.character(CODIGO_UNICO))
+
+df_det_inv_pircc_10c <- dplyr::select(
+  df_det_inv_pircc_10,
+  CODIGO_UNICO,
+  MONTO_VIABLE,
+  COSTO_ACTUALIZADO,
+  DES_TIPOLOGIA
+)
+
+# Vincular geometría y atributos para el mapa.
+df_pu_geoinv_inv_g_pircc10 <- df_pu_geoinvierte_inv_g |>
+  dplyr::mutate(COD_UNICO = as.character(COD_UNICO)) |>
+  dplyr::filter(COD_UNICO %in% df_det_inv_pircc_10$CODIGO_UNICO) |>
+  dplyr::distinct(COD_UNICO, .keep_all = TRUE) |>
+  dplyr::select(COD_UNICO, NOMBRE_PRO) |>
+  dplyr::left_join(df_det_inv_pircc_10c, by = c("COD_UNICO" = "CODIGO_UNICO")) |>
+  sf::st_centroid()
+
+# Agregación para serie temporal de devengado acumulado por proyecto.
+df_inv_pircc10_2012_25 <- df_grd_2012_25 |>
+  dplyr::mutate(cui_anin = PRODUCTO_PROYECTO %in% df_det_inv_pircc_10$CODIGO_UNICO) |>
+  dplyr::filter(cui_anin) |>
+  dplyr::group_by(PRODUCTO_PROYECTO, ANIO, PRODUCTO_PROYECTO_NOMBRE) |>
+  dplyr::summarise(
+    PIA = sum(PIA, na.rm = TRUE),
+    PIM = sum(PIM, na.rm = TRUE),
+    DEVENGADO = sum(DEVENGADO, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Construir base plana para mapa y metadatos HTML de popup.
+coords_map <- sf::st_coordinates(df_pu_geoinv_inv_g_pircc10)
+
+df_map_data <- df_pu_geoinv_inv_g_pircc10 |>
+  sf::st_drop_geometry() |>
+  dplyr::mutate(
+    lng = coords_map[, 1],
+    lat = coords_map[, 2]
+  )
+
+radio_max <- 20
+costo_sqrt <- sqrt(df_map_data$COSTO_ACTUALIZADO)
+df_map_data$radio <- costo_sqrt / max(costo_sqrt, na.rm = TRUE) * radio_max
+
+df_map_data$label_html <- glue::glue(
+  "<b>CUI:</b> {df_map_data$COD_UNICO}<br>",
+  "<b>Nombre:</b> {df_map_data$NOMBRE_PRO}<br>",
+  "<b>Tipología:</b> {df_map_data$DES_TIPOLOGIA}<br>",
+  "<b>Costo Actualizado:</b> S/ {scales::comma(df_map_data$COSTO_ACTUALIZADO)}<br>",
+  "<b>Monto Viable:</b> S/ {scales::comma(df_map_data$MONTO_VIABLE)}"
+)
+
+# Crear SharedData común para vincular mapa y línea por proyecto.
+sd_map <- crosstalk::SharedData$new(
+  df_map_data,
+  key = ~COD_UNICO,
+  group = "proyectos"
+)
+
+df_plot_proy <- df_inv_pircc10_2012_25 |>
+  dplyr::arrange(PRODUCTO_PROYECTO, ANIO) |>
+  dplyr::mutate(
+    PRODUCTO_PROYECTO = as.character(PRODUCTO_PROYECTO),
+    NOMBRE_WRAP = stringr::str_wrap(PRODUCTO_PROYECTO_NOMBRE, width = 40) |>
+      stringr::str_replace_all("\n", "<br>")
+  ) |>
+  dplyr::group_by(PRODUCTO_PROYECTO, PRODUCTO_PROYECTO_NOMBRE, NOMBRE_WRAP) |>
+  dplyr::mutate(DEVENGADO = cumsum(DEVENGADO)) |>
+  dplyr::ungroup()
+
+sd_plot <- crosstalk::SharedData$new(
+  df_plot_proy,
+  key = ~PRODUCTO_PROYECTO,
+  group = "proyectos"
+)
+```
+
+```{r}
+#| label: fig-proyectos
+#| fig-cap: "Top 10 proyectos: mapa y evolución del devengado acumulado (visualización vinculada)."
+
+# Mapa interactivo con puntos escalados por costo actualizado.
+map1 <- leaflet::leaflet(sd_map) |>
+  leaflet::addProviderTiles(leaflet::providers$CartoDB.Positron) |>
+  leaflet::addCircleMarkers(
+    lng = ~lng,
+    lat = ~lat,
+    radius = ~radio,
+    color = "#2c7fb8",
+    fillColor = "#2c7fb8",
+    fillOpacity = 0.6,
+    weight = 1,
+    popup = ~label_html,
+    label = ~COD_UNICO
+  )
+
+# Línea interactiva vinculada al mismo grupo de crosstalk.
+plot_devengado <- sd_plot |>
+  plotly::plot_ly(
+    x = ~ANIO,
+    y = ~DEVENGADO,
+    color = ~PRODUCTO_PROYECTO,
+    customdata = ~NOMBRE_WRAP,
+    type = "scatter",
+    mode = "lines",
+    line = list(width = 1.8),
+    hovertemplate = paste0(
+      "<b>CUI:</b> %{fullData.name}<br>",
+      "<b>Nombre:</b> %{customdata}<br>",
+      "<b>Año:</b> %{x}<br>",
+      "<b>Devengado acum.:</b> S/ %{y:,.0f}",
+      "<extra></extra>"
+    )
+  ) |>
+  plotly::layout(
+    xaxis = list(
+      title = "",
+      dtick = 1,
+      range = list(2017, 2025.05),
+      tickfont = list(size = 11, family = "Georgia, serif", color = "#66605c"),
+      showgrid = FALSE,
+      zeroline = FALSE,
+      showline = TRUE,
+      linewidth = 1,
+      linecolor = "#ccc1b7"
+    ),
+    yaxis = list(
+      title = list(
+        text = "Devengado (S/)",
+        font = list(size = 12, family = "Georgia, serif", color = "#66605c")
+      ),
+      tickformat = ",.0f",
+      separatethousands = TRUE,
+      showgrid = TRUE,
+      gridcolor = "rgba(0,0,0,0.06)",
+      griddash = "dot",
+      zeroline = FALSE,
+      tickfont = list(size = 11, family = "Georgia, serif", color = "#66605c")
+    ),
+    legend = list(
+      orientation = "h",
+      x = 0,
+      y = -0.13,
+      xanchor = "left",
+      yanchor = "top",
+      font = list(size = 10, family = "Georgia, serif", color = "#33302e")
+    ),
+    hovermode = "closest",
+    hoverlabel = list(
+      bgcolor = "rgba(255,255,255,0.96)",
+      bordercolor = "#ccc1b7",
+      font = list(size = 12, family = "Georgia, serif", color = "#33302e")
+    ),
+    plot_bgcolor = "#fff1e5",
+    paper_bgcolor = "#fff1e5",
+    margin = list(l = 60, r = 6, t = 8, b = 72),
+    font = list(family = "Georgia, serif", color = "#33302e")
+  ) |>
+  plotly::highlight(
+    on = "plotly_click",
+    off = "plotly_doubleclick",
+    opacityDim = 0.15
+  ) |>
+  plotly::config(
+    displayModeBar = TRUE,
+    displaylogo = FALSE,
+    locale = "es"
+  )
+
+# Presentación conjunta dentro del mismo wrapper editorial estándar.
+htmltools::div(
+  class = "ft-chart-wrapper",
+  htmltools::h2(
+    class = "chart-headline",
+    "Top 10 proyectos: localización y evolución del devengado"
+  ),
+  htmltools::p(
+    class = "chart-subhead",
+    "Visualización vinculada: clic en una serie para resaltar el mismo proyecto"
+  ),
+  htmltools::div(
+    class = "chart-body",
+    crosstalk::bscols(widths = c(6, 6), map1, plot_devengado)
+  ),
+  htmltools::div(
+    class = "chart-footer",
+    htmltools::span(class = "chart-source", "Fuente: MEF / capas georreferenciadas"),
+    htmltools::span(class = "chart-credit", "Elaboración propia")
+  )
+)
+```
+
+Texto de ejemplo para reemplazo: la Figura @fig-proyectos permite narrar hallazgos por proyecto, contrastando localización y trayectoria de ejecución.
