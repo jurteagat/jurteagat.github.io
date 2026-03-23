@@ -118,7 +118,7 @@ library(here)
 }
 ```
 
-## Este año nuevamente tenemos afectaciones por lluvias
+## Este año nuevamente nos afectaron las lluvias intensas
 
 En las últimas semanas hemos sido testigos de importantes emergencias por lluvias intensas. Si bien las proyecciones de diciembre del año pasado, no avizoraban un evento El Niño costero, al punto que el estado del sistema de alerta se posicionó como “No activo” en ese entonces [@enfen2025]; desde fines de febrero del presente nos encontramos inmersos en un evento El Niño costero que aún no excede la moderada intensidad [@enfen2026b]. Es preciso señalar que para el caso de la sierra y la selva, @senamhi2025 estuvo pronosticando desde octubre del año pasado, que algunas regiones estarían presentando exceso de lluvias (principalmente en febrero). Esperemos que el país pueda irse aliviando lo más pronto de los importantes daños que se han presentado.
 
@@ -126,11 +126,11 @@ En las últimas semanas hemos sido testigos de importantes emergencias por lluvi
 
 No deja de ser importante, sin embargo, el recordar que estamos ad portas de las elecciones presidenciales, y luego de unos meses, elecciones de gobiernos regionales y municipales. Esto hace especialmente necesario que los técnicos y la sociedad en su conjunto reflexionemos un poco más sobre el estado de la Gestión del Riesgo de Desastres (GRD) en nuestro país, y ensayar planteamientos para su mejora.
 
-##¿Cómo se ha venido desarrollando la GRD en el país en los últimos años?
+## ¿Cómo se ha venido desarrollando la GRD en el país en los últimos años?
 
 Si bien, se necesitaría un análisis amplio y profundo al respecto, y en años anteriores se han realizado algunos intentos, tales como el de la @onu2014 o el de la @pcm2021, en esta oportunidad me gustaría abordar al menos 3 aspectos claves en los que considero que no se han desarrollado los suficientes esfuerzos.
 
-A manera de contextualización, siempre me ha parecido importante empezar revisando los registros históricos de daños, dado que es una información que es producto de un proceso estandarizado de recojo de información (que claramente debe mejorarse continuamente) desde los lugares afectados. Actualmente como información pública, considero que los datos de damnificados[^1] son los de mejor representatividad y confiabilidad, por lo cual, en la @fig-damnificados los he agrupado según los peligros principales identificados en el PLANAGERD 2022-2030 [@pcm2022], para tener una primera mirada panorámica. Así, es evidente que los peligros de Lluvia intensa-Inundación y el sísmico son los que más impacto y recurrencia han tenido[^2].
+A manera de contexto, siempre me ha parecido importante empezar revisando los registros históricos de daños, dado que es una información que es producto de un proceso estandarizado de recojo de información (que claramente debe mejorarse continuamente) desde los lugares afectados. Actualmente como información pública, considero que los datos de damnificados[^1] son los de mejor representatividad y confiabilidad, por lo cual, en la @fig-damnificados los he agrupado según los peligros principales identificados en el PLANAGERD 2022-2030 [@pcm2022], para tener una primera mirada panorámica. Así, es evidente que los peligros de Lluvia intensa-Inundación y el sísmico son los que más impacto y recurrencia han tenido[^2].
 
 [^1]: La definición histórica de un damnificado es, básicamente, aquella persona que se ha quedado sin vivienda. Con lo cual es de las calificaciones menos subjetivas, luego de la cantidad de fallecidos.
 
@@ -411,7 +411,7 @@ anio_max_v <- max(df_devengado_plot$ANIO, na.rm = TRUE)
 
 ```{r}
 #| label: fig-devengado
-#| fig-cap: "Ejecución del presupuesto en GRD 2015-2025. La tipología de desagregación es personal, con el objetivo de favorecer la comprensión."
+#| fig-cap: "Ejecución del presupuesto en GRD 2015-2025. Se ha elaborado una tipología de desagregación con el objetivo de favorecer la comprensión."
 
 # Construcción explícita en plotly para igualar el estilo al gráfico base.
 fig_devengado <- plotly::plot_ly()
@@ -642,7 +642,7 @@ sd_plot <- crosstalk::SharedData$new(
 
 ```{r}
 #| label: fig-proyectos
-#| fig-cap: "Top 10 proyectos: mapa y evolución del devengado acumulado (visualización vinculada)."
+#| fig-cap: "Top 10 proyectos del PIRCC con mayor costo actualizado "
 
 # Mapa interactivo con puntos escalados por costo actualizado.
 map1 <- leaflet::leaflet(sd_map) |>
@@ -755,14 +755,20 @@ htmltools::div(
 )
 ```
 
-En segundo lugar, considero importante que se ejecuten proyectos más innovadores, en integrales que aborden nuestra complejidad nacional. No estaría mal reforzar el interés en proyectos tales como: parques inundables, que ya se han incorporado incluso en países de nuestra región como Chile [@doh]; además, desarrollo urbano con un enfoque preventivo estratégico, con el cual se pueda atender el caso de ciudades como Chancay, cuyo crecimiento demográfico se está acelerando fuertemente; o el desarrollo forestal, que en muchos casos reduce el riesgo de ante movimientos en masa, ocupa el suelo evitando el desarrollo de invasiones, y en el interior de las ciudades incluso alivia el malestar de las olas de calor. Por último, considero importante que se fortalezcan los enfoques técnicos y estratégicos en la toma de decisiones, lo cual implicará, entre otras cosas, poder priorizar decididamente la reducción del riesgo sísmico que indudablemente está vinculado a los mayores impactos históricos para el país, y se han generado constantes alertas de la comunidad científica [e.g. @villegas-lanza2016]. Se sabe que para este tipo de peligros, una de las intervenciones de gran efectividad es el desarrollo de programas masivos de reforzamiento/protección estructural de infraestructura esencial como Hospitales y Centros Educativos [@tena-colunga2022]. La ejecución de intervenciones de alta efectividad, nos permitirá evitar grandes pérdidas, alejándonos lo máximo posible de repetir el escenario en el que lideramos los rankings de mal desempeño como se vivió lamentablemente en la pandemia por la COVID-19 [cf. @villarán2021]. Esto también debe contemplar mejorar los sistemas de estimación del riesgo y del monitoreo de intervenciones de GRD, mayor transparencia en la información, masificar el uso de tecnologías/ metodologías de vanguardia como drones, imágenes satelitales, ciencia de datos, modelos fundacionales de inteligencia artificial, etc.
+En segundo lugar, considero importante que se ejecuten proyectos más innovadores, en integrales que aborden nuestra complejidad nacional. No estaría mal reforzar el interés en proyectos tales como: parques inundables, que ya se han incorporado incluso en países de nuestra región como Chile [@doh]; además, desarrollo urbano con un enfoque preventivo estratégico, con el cual se pueda atender el caso de ciudades como Chancay, cuyo crecimiento demográfico se está acelerando fuertemente; o el desarrollo forestal, que en muchos casos reduce el riesgo de ante movimientos en masa, ocupa el suelo evitando el desarrollo de invasiones, y en el interior de las ciudades incluso alivia el malestar de las olas de calor. 
+
+Por último, considero importante que se fortalezcan los enfoques técnicos y estratégicos en la toma de decisiones, lo cual implicará, entre otras cosas, poder priorizar decididamente la reducción del riesgo sísmico que indudablemente está vinculado a los mayores impactos históricos para el país, y se han generado constantes alertas de la comunidad científica [e.g. @villegas-lanza2016]. Se sabe que para este tipo de peligros, una de las intervenciones de gran efectividad es el desarrollo de programas masivos de reforzamiento/protección estructural de infraestructura esencial como Hospitales y Centros Educativos [@tena-colunga2022]. La ejecución de intervenciones de alta efectividad, nos permitirá evitar grandes pérdidas, alejándonos lo máximo posible de repetir el escenario en el que lideramos los rankings de mal desempeño como se vivió lamentablemente en la pandemia por la COVID-19 [cf. @villarán2021]. Esto también debe contemplar mejorar los sistemas de estimación del riesgo y del monitoreo de intervenciones de GRD, mayor transparencia en la información, masificar el uso de tecnologías/ metodologías de vanguardia como drones, imágenes satelitales, ciencia de datos, modelos fundacionales de inteligencia artificial, etc.
 
 ## Qué pasará…
 
-Espero que estas ideas compartidas, respecto a la situación en que se encuentra nuestro país y las principales apuestas que permitirían su mejora, puedan servir para enriquecer el debate y diálogo tan necesario en el Perú, y en el mejor de los casos que sea un aporte a la formación de criterio que necesitan los ciudadanos para elegir y supervisar a sus autoridades.
+Espero que estas ideas compartidas, respecto a la situación en que se encuentra nuestro país y las principales apuestas que permitirían su mejora, puedan servir para enriquecer el debate y diálogo tan necesario en el Perú, y en el mejor de los casos que sea un aporte a la formación de criterio de los ciudadanos para elegir y supervisar a sus autoridades.
 
 ## Agradecimientos
 
-Se agradece a [Arturo Turpo](https://www.linkedin.com/in/arturo-rogger-turpo-barrios-862521250/) por la revisión del borrador de este artículo.
+Agradezco a [Arturo Turpo](https://www.linkedin.com/in/arturo-rogger-turpo-barrios-862521250/) por la revisión del borrador de este artículo.
+
+## Atento a sus comentarios
+
+Para que sigamos reflexionando sobre este tema, estaré gustoso de leer sus comentarios [aquí](https://www.linkedin.com/in/jnut/recent-activity/all/) .
 
 # Referencias
