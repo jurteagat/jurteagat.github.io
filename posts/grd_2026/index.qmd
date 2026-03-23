@@ -3,17 +3,18 @@ title: "Perú Elecciones 2026: ¿Qué necesitamos en Gestión del Riesgo de Desa
 # format:
 #   html:
 #     embed-resources: true
-#     page-layout: full
+page-layout: full
 execute:
   echo: false
   warning: false
   message: false
 author: "Juan Urteaga Tirado"
-date: "2023-10-05"
+date: "2026-03-23"
 categories: [Gestión del Riesgo de Desastres, Ciencia de Datos, Estudios Territoriales]
 bibliography: references.bib
 lang: es
 csl: apa.csl
+image: "/posts/grd_2026/logo_grd_2026.jpg"
 ---
 
 ```{r}
@@ -117,13 +118,23 @@ library(here)
 }
 ```
 
-# Introducción (texto de ejemplo)
+## Este año nuevamente tenemos afectaciones por lluvias
 
-Este es un texto de ejemplo para el artículo. En la Figura @fig-damnificados se presenta la evolución de personas damnificadas por tipo de peligro.
+En las últimas semanas hemos sido testigos de importantes emergencias por lluvias intensas. Si bien las proyecciones de diciembre del año pasado, no avizoraban un evento El Niño costero, al punto que el estado del sistema de alerta se posicionó como “No activo” en ese entonces [@enfen2025]; desde fines de febrero del presente nos encontramos inmersos en un evento El Niño costero que aún no excede la moderada intensidad [@enfen2026b]. Es preciso señalar que para el caso de la sierra y la selva, @senamhi2025 estuvo pronosticando desde octubre del año pasado, que algunas regiones estarían presentando exceso de lluvias (principalmente en febrero). Esperemos que el país pueda irse aliviando lo más pronto de los importantes daños que se han presentado.
 
-Como segundo bloque narrativo de ejemplo, la Figura @fig-devengado muestra el devengado acumulado por categoría de agrupación en el periodo analizado.
+## Un año de elecciones…
 
-Finalmente, la Figura @fig-proyectos integra mapa y serie temporal vinculados, permitiendo explorar cada proyecto de forma interactiva dentro del artículo.
+No deja de ser importante, sin embargo, el recordar que estamos ad portas de las elecciones presidenciales, y luego de unos meses, elecciones de gobiernos regionales y municipales. Esto hace especialmente necesario que los técnicos y la sociedad en su conjunto reflexionemos un poco más sobre el estado de la Gestión del Riesgo de Desastres (GRD) en nuestro país, y ensayar planteamientos para su mejora.
+
+##¿Cómo se ha venido desarrollando la GRD en el país en los últimos años?
+
+Si bien, se necesitaría un análisis amplio y profundo al respecto, y en años anteriores se han realizado algunos intentos, tales como el de la @onu2014 o el de la @pcm2021, en esta oportunidad me gustaría abordar al menos 3 aspectos claves en los que considero que no se han desarrollado los suficientes esfuerzos.
+
+A manera de contextualización, siempre me ha parecido importante empezar revisando los registros históricos de daños, dado que es una información que es producto de un proceso estandarizado de recojo de información (que claramente debe mejorarse continuamente) desde los lugares afectados. Actualmente como información pública, considero que los datos de damnificados[^1] son los de mejor representatividad y confiabilidad, por lo cual, en la @fig-damnificados los he agrupado según los peligros principales identificados en el PLANAGERD 2022-2030 [@pcm2022], para tener una primera mirada panorámica. Así, es evidente que los peligros de Lluvia intensa-Inundación y el sísmico son los que más impacto y recurrencia han tenido[^2].
+
+[^1]: La definición histórica de un damnificado es, básicamente, aquella persona que se ha quedado sin vivienda. Con lo cual es de las calificaciones menos subjetivas, luego de la cantidad de fallecidos.
+
+[^2]: La información empieza desde el año 2003, dado que el Sistema de Información Nacional para la Respuesta y Rehabilitación (SINPAD-INDECI), viene registrando los daños de una manera más estandarizada. Cabe recordar que previo a dicho año han existido eventos importantes de desastre, tales como el sismo de Arequipa (2001), Ancash (1970) o los eventos El Niño 1997/98, 1983/84, y otros eventos históricos incluso de mayor magnitud.
 
 ```{r}
 #| label: prep-damnificados
@@ -208,7 +219,7 @@ paleta_damnificados <- c(
 
 ```{r}
 #| label: fig-damnificados
-#| fig-cap: "Damnificados acumulados según principales peligros (visualización interactiva)."
+#| fig-cap: "Nota: Solo las categorías “Incendio Urbano” y “Otros” no corresponden a peligros principales identificados por el PLANAGERD 2022-2030"
 
 # Construcción de gráfico interactivo apilado con estilo editorial estándar.
 fig_damnificados <- plotly::plot_ly()
@@ -319,13 +330,25 @@ htmltools::div(
   htmltools::div(class = "chart-body", fig_damnificados),
   htmltools::div(
     class = "chart-footer",
-    htmltools::span(class = "chart-source", "Fuente: SINPAD – INDECI"),
+    htmltools::span(class = "chart-source", "Fuente: SINPAD – COEN - INDECI"),
     htmltools::span(class = "chart-credit", "Elaboración propia")
   )
 )
 ```
 
-Texto de ejemplo para reemplazo: en la Figura @fig-damnificados se podría describir la tendencia general y los periodos de mayor concentración.
+Prosiguiendo con esta revisión contextual, es importante analizar la manera en que se ha estado atendiendo la problemática de la GRD, no solo desde el componente reactivo/ compensatorio, sino también desde el prospectivo y correctivo (más estratégico y preventivo). Un interesante acercamiento es analizar cómo se ha venido ejecutando el gasto público en intervenciones de GRD. Una estimación aproximada pero razonable se puede lograr a partir de la integración de las bases de datos del Programa Presupuestal 0068[^3] , la correspondiente al FONDES[^4] , las asignaciones especiales emitidas por los eventos El Niño y las tipologías de inversión vinculadas a la GRD. Así, en la @fig-devengado se puede identificar que los gastos por emergencia desde el 2012 han representado 409 millones en promedio cada año, los cuales evidentemente tienen una tendencia ascendente, y con intensificaciones en años como el 2017 y el 2023.
+
+[^3]: Programa Presupuestal 0068: Reducción de la vulnerabilidad y atención de emergencia por desastres. Es el programa presupuestal que se encuentra más orientado hacia la GRD
+
+[^4]: Fondo para intervenciones ante la ocurrencia de desastres naturales (FONDES).
+
+Otro aspecto resaltante, es que luego de El Niño Costero 2017 los gastos de inversión han venido creciendo sostenidamente hasta el 2024 (ciertamente en gran parte producto del PIRCC[^5] ), aunque cabe indicar que el mayor gasto hasta el 2023 fue orientado a las IRIs[^6] . Asimismo, es de precisar, que los proyectos de inversión empezaron a cobrar un protagonismo en el gasto desde el año 2021, producto de la modalidad de ejecución G2G[^7] que ha facilitado una ejecución más acelerada de las grandes obras del PIRCC, ejecutándose principalmente sistemas de defensas ribereñas, aunque quedando lamentablemente rezagadas las intervenciones de drenaje pluvial y fuera del mapa intervenciones grandes para la reducción del riesgo sísmico. En efecto, se evidencia un comportamiento del gasto fuertemente guiado por la reacción a los grandes desastres, existiendo un importante espacio de mejora respecto a la priorización del gasto en los tipos de intervención más efectivos y necesarios que permitan reducir y prevenir el riesgo en donde más se encuentre acumulado.
+
+[^5]: Plan Integral de Reconstrucción con Cambios (PIRCC).
+
+[^6]: Intervenciones de Reconstrucción mediante Inversiones (IRI).
+
+[^7]: Acuerdos de Gobierno a Gobierno (G2G).
 
 ```{r}
 #| label: prep-devengado
@@ -388,7 +411,7 @@ anio_max_v <- max(df_devengado_plot$ANIO, na.rm = TRUE)
 
 ```{r}
 #| label: fig-devengado
-#| fig-cap: "Devengado acumulado por categoría de agrupación (visualización interactiva)."
+#| fig-cap: "Ejecución del presupuesto en GRD 2015-2025. La tipología de desagregación es personal, con el objetivo de favorecer la comprensión."
 
 # Construcción explícita en plotly para igualar el estilo al gráfico base.
 fig_devengado <- plotly::plot_ly()
@@ -487,22 +510,32 @@ htmltools::div(
   class = "ft-chart-wrapper",
   htmltools::h2(
     class = "chart-headline",
-    glue::glue("Devengado acumulado por {var_agrupacion} — {anio_min_v}–{anio_max_v}")
+    glue::glue("Ejecución del presupuesto en GRD — {anio_min_v}–{anio_max_v}")
   ),
   htmltools::p(
     class = "chart-subhead",
-    "Programa Presupuestal 0068 en millones de soles"
+    "Desagregado según diversos tipos de actividades e inversiones"
   ),
   htmltools::div(class = "chart-body", fig_devengado),
   htmltools::div(
     class = "chart-footer",
-    htmltools::span(class = "chart-source", "Fuente: SIAF-MEF"),
+    htmltools::span(class = "chart-source", "Fuente: Datos abiertos MEF"),
     htmltools::span(class = "chart-credit", "Elaboración propia")
   )
 )
 ```
 
-Texto de ejemplo para reemplazo: la Figura @fig-devengado puede citarse para explicar cambios de composición y periodos de mayor ejecución presupuestal.
+Por otro lado, se pueden citar algunos aciertos adicionales importantes, tales como las reformas del reglamento del FONDES emitidas desde el 2024 (procesos de los que he formado parte), en los que se buscó que los mecanismos de gestión de las solicitudes de financiamiento puedan desarrollarse desde una manera más técnica, ágil, transparente y moderna [cf. @mef2024; @mef2025]. Por otro lado, una iniciativa positiva planteada el año pasado fue el desarrollo de megaproyectos de irrigación multipropósito [@proinversión2025] en los que se incorpore de manera importante la mitigación de inundaciones[^8] , y considerando además que no solo se contemple la modalidad de G2G sino que considere un mayor espacio para las modalidades de cooperación público-privada tales como las APP[^9]. Esto aliviaría la gran presión en el gasto público que implican estos megaproyectos. Cabe resaltar que con el enfoque multipropósito además se rescataría uno de los grandes fundamentos de la gestión territorial, en cual los fenómenos naturales dejan de ser vistos solo como amenaza y más bien son considerados como uno de los factores condicionantes del desarrollo, representando ventajas y desventajas en la medida en que la intervención humana se ejecute estratégicamente para lograr un desarrollo integral [@caneloalmeida1991; @cannon2014].
+
+[^8]: Ciertamente existen varios proyectos similares desarrollados en el mundo, desde el emblemático caso de la Tennessee Valley Authority (TVA) en EEUU [@comprehe1998], hasta el caso de nuestro país vecino Ecuador [@mcdermot2022].
+
+[^9]: Asociación Público Privada (APP)
+
+## ¿Qué es lo que más necesitamos en la GRD peruana?
+
+Si bien son muchos los puntos en los que se necesitan cambios, me gustaría profundizar en 3 puntos que considero de gran impacto para mejorar la GRD peruana.
+
+En principio considero importante el asegurar la sostenibilidad de la ejecución y vida útil de los megaproyectos que tengan un impacto importante en la GRD (los proyectos multipropósito incluidos). En la @fig-proyectos se puede observar los 10 proyectos más costosos del PIRCC. Es ciertamente preocupante cómo el presupuesto de estos proyectos se ha incrementado respecto a cuando se realizó la viabilidad; por otro lado, el avance de estos proyectos es aparentemente lento dado que estamos hablando de proyectos de cientos de millones de soles financiados básicamente con el presupuesto nacional, generando un entendible estrés fiscal. Es por ello que se hace relevante considerar las diferentes modalidades de colaboración público privada, que además de favorecer el equilibrio fiscal, también facilitan la sostenibilidad de la provisión del servicio.
 
 ```{r}
 #| label: prep-proyectos
@@ -712,7 +745,7 @@ htmltools::div(
   ),
   htmltools::div(
     class = "chart-body",
-    crosstalk::bscols(widths = c(6, 6), map1, plot_devengado)
+    crosstalk::bscols(widths = c(5, 7), map1, plot_devengado)
   ),
   htmltools::div(
     class = "chart-footer",
@@ -722,4 +755,14 @@ htmltools::div(
 )
 ```
 
-Texto de ejemplo para reemplazo: la Figura @fig-proyectos permite narrar hallazgos por proyecto, contrastando localización y trayectoria de ejecución.
+En segundo lugar, considero importante que se ejecuten proyectos más innovadores, en integrales que aborden nuestra complejidad nacional. No estaría mal reforzar el interés en proyectos tales como: parques inundables, que ya se han incorporado incluso en países de nuestra región como Chile [@doh]; además, desarrollo urbano con un enfoque preventivo estratégico, con el cual se pueda atender el caso de ciudades como Chancay, cuyo crecimiento demográfico se está acelerando fuertemente; o el desarrollo forestal, que en muchos casos reduce el riesgo de ante movimientos en masa, ocupa el suelo evitando el desarrollo de invasiones, y en el interior de las ciudades incluso alivia el malestar de las olas de calor. Por último, considero importante que se fortalezcan los enfoques técnicos y estratégicos en la toma de decisiones, lo cual implicará, entre otras cosas, poder priorizar decididamente la reducción del riesgo sísmico que indudablemente está vinculado a los mayores impactos históricos para el país, y se han generado constantes alertas de la comunidad científica [e.g. @villegas-lanza2016]. Se sabe que para este tipo de peligros, una de las intervenciones de gran efectividad es el desarrollo de programas masivos de reforzamiento/protección estructural de infraestructura esencial como Hospitales y Centros Educativos [@tena-colunga2022]. La ejecución de intervenciones de alta efectividad, nos permitirá evitar grandes pérdidas, alejándonos lo máximo posible de repetir el escenario en el que lideramos los rankings de mal desempeño como se vivió lamentablemente en la pandemia por la COVID-19 [cf. @villarán2021]. Esto también debe contemplar mejorar los sistemas de estimación del riesgo y del monitoreo de intervenciones de GRD, mayor transparencia en la información, masificar el uso de tecnologías/ metodologías de vanguardia como drones, imágenes satelitales, ciencia de datos, modelos fundacionales de inteligencia artificial, etc.
+
+## Qué pasará…
+
+Espero que estas ideas compartidas, respecto a la situación en que se encuentra nuestro país y las principales apuestas que permitirían su mejora, puedan servir para enriquecer el debate y diálogo tan necesario en el Perú, y en el mejor de los casos que sea un aporte a la formación de criterio que necesitan los ciudadanos para elegir y supervisar a sus autoridades.
+
+## Agradecimientos
+
+Se agradece a [Arturo Turpo](https://www.linkedin.com/in/arturo-rogger-turpo-barrios-862521250/) por la revisión del borrador de este artículo.
+
+# Referencias
