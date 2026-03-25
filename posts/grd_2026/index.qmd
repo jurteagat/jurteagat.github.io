@@ -10,7 +10,8 @@ execute:
   message: false
 author: "Juan Urteaga Tirado"
 date: "2026-03-23"
-categories: [Gestión del Riesgo de Desastres, Ciencia de Datos, Estudios Territoriales]
+date-modified: "2026-03-25"
+categories: [Gestión del Riesgo de Desastres, Data Science, Estudios Territoriales, Perú]
 bibliography: references.bib
 lang: es
 csl: apa.csl
@@ -325,7 +326,7 @@ htmltools::div(
   ),
   htmltools::p(
     class = "chart-subhead",
-    "Miles de personas afectadas por tipo de peligro natural"
+    "Agrupado según los principales peligros del PLANAGERD 2022-2030"
   ),
   htmltools::div(class = "chart-body", fig_damnificados),
   htmltools::div(
@@ -737,11 +738,11 @@ htmltools::div(
   class = "ft-chart-wrapper",
   htmltools::h2(
     class = "chart-headline",
-    "Top 10 proyectos: localización y evolución del devengado"
+    "Top 10 proyectos del PIRCC con mayor costo actualizado"
   ),
   htmltools::p(
     class = "chart-subhead",
-    "Visualización vinculada: clic en una serie para resaltar el mismo proyecto"
+    "Localización y evolución de ejecución presupuestal"
   ),
   htmltools::div(
     class = "chart-body",
@@ -749,7 +750,7 @@ htmltools::div(
   ),
   htmltools::div(
     class = "chart-footer",
-    htmltools::span(class = "chart-source", "Fuente: MEF / capas georreferenciadas"),
+    htmltools::span(class = "chart-source", "Fuente: Datos abiertos MEF"),
     htmltools::span(class = "chart-credit", "Elaboración propia")
   )
 )
