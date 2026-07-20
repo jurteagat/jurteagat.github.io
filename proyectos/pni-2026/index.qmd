@@ -1,0 +1,29 @@
+---
+title: "Plan Nacional de Infraestructura 2026"
+description: "Dashboard de las inversiones clave del PNI 2026 cruzadas con el Banco de Inversiones del MEF, con mapas 3D."
+author: "Juan Urteaga Tirado"
+date: "2026-07-20"
+categories: [R, Shiny, Infraestructura, Inversión Pública, Perú]
+image: caratula.png
+lang: es
+---
+
+<a href="https://jurteagat-pni-2026.share.connect.posit.cloud/" class="btn btn-primary" target="_blank" rel="noopener">Abrir el dashboard</a>
+
+Este proyecto combina un análisis exploratorio de datos en R/Quarto con un dashboard en Shiny sobre las inversiones clave del Plan Nacional de Infraestructura 2026 (PNI 2026), cruzadas con el Banco de Inversiones del MEF (Invierte.pe) mediante el código único de inversión (CUI). El cruce permite enriquecer cada inversión priorizada en el PNI con su información oficial de seguimiento en el sistema de inversión pública.
+
+El análisis cubre los montos de inversión en soles (millones), los costos actualizados registrados en el banco, el avance físico de las obras, la distribución de las inversiones por tipología y por nivel de "Potencial", y su ubicación geográfica a nivel nacional. El EDA incluye además una lectura de los hallazgos a la luz de la literatura de política pública, en particular el propio PNI 2026–2031, los estudios de infraestructura sostenible de WCS-TNC-GRADE, y los documentos "Perú Debate 2026" del CIES.
+
+El acceso al dashboard requiere autenticación (implementada con `shinymanager`). Sus secciones son: Resumen, Mapa, Mapa 3D, Distribuciones, Dimensiones PNI, Inversión Seleccionada y Ficha Técnica.
+
+## Tecnologías
+
+- R, Shiny (`bslib`), Quarto
+- `mapgl` para los mapas 3D (estilo MapLibre/deck.gl: torres 3D y hexágonos 3D)
+- `leaflet`, `plotly` y `ggplot2` para mapas y gráficos adicionales
+- `sf` / `arrow` / `wk` para el manejo de geodatos
+- `googlesheets4` y `googledrive` como fuentes de datos
+- `shinymanager` para la autenticación
+- `DT` y `data.table` para tablas y manejo de datos
+- Reporte PDF generado con Typst
+- Desplegado en Posit Connect Cloud

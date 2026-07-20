@@ -11,3 +11,5 @@
 # Basura de macOS en discos ExFAT/FAT
 ._*
 .DS_Store
+
+**/*.quarto_ipynb

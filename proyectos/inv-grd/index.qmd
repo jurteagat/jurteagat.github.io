@@ -1,0 +1,28 @@
+---
+title: "Inversiones GRD — Perú"
+description: "Dashboard de análisis exploratorio de las inversiones públicas en Gestión del Riesgo de Desastres del Perú (Invierte.pe / MEF)."
+author: "Juan Urteaga Tirado"
+date: "2026-07-20"
+categories: [R, Shiny, Gestión del Riesgo de Desastres, Inversión Pública, Perú]
+image: caratula.png
+lang: es
+---
+
+<a href="https://jurteagat-inv-grd.share.connect.posit.cloud/" class="btn btn-primary" target="_blank" rel="noopener">Abrir el dashboard</a>
+
+Este proyecto es un dashboard construido en Shiny (con `bslib` y `page_navbar`), acompañado de un cuaderno Quarto en R que documenta el análisis exploratorio de datos. Su objetivo es explorar las inversiones públicas en Gestión del Riesgo de Desastres (GRD) registradas en el marco de Invierte.pe del Ministerio de Economía y Finanzas (MEF), cubriendo el programa de Gestión de Riesgos y Emergencias junto con las tipologías de drenaje pluvial e IOARR de emergencia.
+
+El análisis explora los montos de inversión, el avance financiero y devengado, la distribución de las inversiones por tipología y por departamento, y su georreferenciación a lo largo del territorio peruano. Las fuentes de datos son el detalle de inversiones del MEF (un CSV de aproximadamente 388 MB), los puntos georreferenciados de las inversiones (un GeoPackage de cerca de 265 MB) y la serie histórica de ejecución presupuestal 2012–2025, extendida a 2026 con el devengado del año en curso.
+
+El dashboard está organizado en seis secciones: Resumen, Mapa, Distribuciones, Departamentos, Inversión Seleccionada y Ficha Técnica.
+
+## Tecnologías
+
+- R, Shiny (`bslib`), Quarto
+- `leaflet` / `leaflet.extras` para los mapas
+- `plotly` y `ggplot2` para los gráficos
+- `sf` / `sfarrow` / `arrow` para el manejo de geodatos
+- `data.table` para la lectura de los CSV grandes
+- `DT` para las tablas interactivas
+- Reporte PDF por inversión generado con Typst
+- Desplegado en Posit Connect Cloud

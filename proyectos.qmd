@@ -1,0 +1,15 @@
+---
+title: "Proyectos"
+listing:
+  contents: proyectos
+  type: grid
+  sort: "date desc"
+  categories: true
+  sort-ui: false
+  filter-ui: false
+  fields: [image, title, description, categories]
+page-layout: full
+title-block-banner: true
+---
+
+Una galería de dashboards y proyectos aplicados de análisis de datos en el sector público peruano.

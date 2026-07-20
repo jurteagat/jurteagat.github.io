@@ -10,6 +10,7 @@ website:
       - href: index.qmd
         text: Home
       - posts.qmd
+      - proyectos.qmd
     tools:
       - icon: linkedin
         href: https://www.linkedin.com/in/jnut/
