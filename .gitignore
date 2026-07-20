@@ -7,3 +7,7 @@
 /_site/
 /midputs/
 /raw/
+
+# Basura de macOS en discos ExFAT/FAT
+._*
+.DS_Store
